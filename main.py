@@ -2,12 +2,28 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.uic import load_ui
 from PyQt6.QtGui import QPixmap, QIcon
 import sys
+from ui_ui import Ui_MainWindow
 
 
-class TikTacToeBoard(QMainWindow):
+class TikTacToeBoard(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle('Крестики-Нолики')
+        self.setFixedSize(600, 600)
+        self.player = 'X'
+        self.btns = [[self.btn_1, self.btn_2, self.btn_3],
+                     [self.btn_4, self.btn_5, self.btn_6],
+                     [self.btn_7, self.btn_8, self.btn_9]
+                     ]
         
+        for row in self.btns:
+            for col in row:
+                col.clicked.connect(self.make_move)
+                col.setDisabled(True)
+        self.btnStart.clicked.connect(self.new_game)
+        self.output.setDisabled(True)
+
     def new_game(self):
         """New game"""
         self.winner = False
@@ -21,17 +37,35 @@ class TikTacToeBoard(QMainWindow):
         for row in self.btns:
             for button in row:
                 button.setDisabled(False)
-    
+
     def config(self):
         pass
-    
+
     def check_field(self):
-        pass
-    
+        diags = [[self.field[i][i] for i in range(len(self.field[0]))],
+                 [self.field[i][len(self.field[0]) - 1 - i] for i in range(len(self.field[0]))]]
+        rows = [[self.field[i][j] for i in range(len(self.field[0]))] for j in range(len(self.field[0]))]
+        cols = self.field[:]
+        
+        #Checking...
+        for i in range(len(diags)):
+            if (diags[i].count(diags[0]) == len(diags[i])) and diags[i] != '?':
+                pass
+        
+        for i in range(len(rows)):
+            if (rows[i].count(rows[0]) == len(rows[i])) and rows[i] != '?':
+                pass
+            
+        for i in range(len(cols)):
+             if (cols[i].count(cols[0]) == len(cols[i])) and cols[i] != '?':
+                pass
+
     def make_move(self):
         """make move in field"""
         row, col = 0, 0
         button = self.sender()
+
+        button.setText(self.player)
         if int(button.objectName()[-1]) <= 3:
             col = int(button.objectName()[-1]) - 1
         elif 3 < int(button.objectName()[-1]) <= 6:
@@ -40,24 +74,24 @@ class TikTacToeBoard(QMainWindow):
         elif 6 < int(button.objectName()[-1]) <= 9:
             row = 2
             col = int(button.objectName()[-1]) - 7
-            
+
         if self.field[row][col] == '?':
             if self.player == 'X':
                 self.field[row][col] = 'X'
-                self.output.setText(f'Игрок \"{self.player}\" походил на {row + 1} ряд {col + 1} колонки')
+                self.output.setText(f'Игрок \"{self.player}\" походил на {
+                                    row + 1} ряд {col + 1} колонки')
                 self.player = '0'
             elif self.player == '0':
                 self.field[row][col] = '0'
-                self.output.setText(f'Игрок \"{self.player}\" походил на {row + 1} ряд {col + 1} колонки')
+                self.output.setText(f'Игрок \"{self.player}\" походил на {
+                                    row + 1} ряд {col + 1} колонки')
                 self.player = 'X'
         else:
-            self.output.setText(f'Ход невозможен, т.к ход уже был сделан игроком \"{button.text()}\"')
+            self.output.setText(
+                f'Ход невозможен, т.к ход уже был сделан игроком \"{button.text()}\"')
         self.check_field()
-        
-                
-        
-    
-    
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = TikTacToeBoard()
