@@ -11,12 +11,12 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle('Крестики-Нолики')
         self.setFixedSize(600, 600)
-        self.player = 'X'
+       
         self.btns = [[self.btn_1, self.btn_2, self.btn_3],
                      [self.btn_4, self.btn_5, self.btn_6],
                      [self.btn_7, self.btn_8, self.btn_9]
                      ]
-        
+
         for row in self.btns:
             for col in row:
                 col.clicked.connect(self.make_move)
@@ -26,6 +26,7 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
 
     def new_game(self):
         """New game"""
+        self.player = 'X'
         self.winner = False
         self.output.setText('')
         self.field = [["?" for _ in range(3)] for _ in range(3)]
@@ -41,31 +42,51 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
     def config(self):
         pass
 
+    def block_buttons(self):
+        for row in self.btns:
+            for col in row:
+                col.setDisabled(True)
+
     def check_field(self):
         diags = [[self.field[i][i] for i in range(len(self.field[0]))],
                  [self.field[i][len(self.field[0]) - 1 - i] for i in range(len(self.field[0]))]]
-        rows = [[self.field[i][j] for i in range(len(self.field[0]))] for j in range(len(self.field[0]))]
+        rows = [[self.field[i][j] for i in range(
+            len(self.field[0]))] for j in range(len(self.field[0]))]
         cols = self.field[:]
-        
-        #Checking...
+        print(diags, rows, cols, sep='\n')
+        # Checking...
         for i in range(len(diags)):
-            if (diags[i].count(diags[0]) == len(diags[i])) and diags[i] != '?':
-                pass
-        
+            if (diags[i].count(diags[i][0]) == len(diags[i])) and diags[i][0] != '?':
+                self.winner = 'X' if self.player == '0' else '0'
+                self.block_buttons()
+                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.btnStart.setDisabled(False)
+
         for i in range(len(rows)):
-            if (rows[i].count(rows[0]) == len(rows[i])) and rows[i] != '?':
-                pass
-            
+            if (rows[i].count(rows[i][0]) == len(rows[i])) and rows[i][0] != '?':
+                self.winner = 'X' if self.player == '0' else '0'
+                self.block_buttons()
+                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.btnStart.setDisabled(False)
+                
         for i in range(len(cols)):
-             if (cols[i].count(cols[0]) == len(cols[i])) and cols[i] != '?':
-                pass
+            if (cols[i].count(cols[i][0]) == len(cols[i])) and cols[i][0] != '?':
+                self.winner = 'X' if self.player == '0' else '0'
+                self.block_buttons()
+                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.btnStart.setDisabled(False)
+                
+        if '?' not in str(self.field) and not self.winner:
+            self.winner = None
+            self.output.setText('Ничья')
+            self.block_buttons()
+            self.btnStart.setDisabled(False)
 
     def make_move(self):
         """make move in field"""
         row, col = 0, 0
         button = self.sender()
 
-        button.setText(self.player)
         if int(button.objectName()[-1]) <= 3:
             col = int(button.objectName()[-1]) - 1
         elif 3 < int(button.objectName()[-1]) <= 6:
@@ -75,14 +96,17 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
             row = 2
             col = int(button.objectName()[-1]) - 7
 
+        print(self.field[row][col])
         if self.field[row][col] == '?':
             if self.player == 'X':
                 self.field[row][col] = 'X'
+                button.setText('X')
                 self.output.setText(f'Игрок \"{self.player}\" походил на {
                                     row + 1} ряд {col + 1} колонки')
                 self.player = '0'
             elif self.player == '0':
                 self.field[row][col] = '0'
+                button.setText('0')
                 self.output.setText(f'Игрок \"{self.player}\" походил на {
                                     row + 1} ряд {col + 1} колонки')
                 self.player = 'X'
