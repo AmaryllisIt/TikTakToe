@@ -53,32 +53,32 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
         rows = [[self.field[i][j] for i in range(
             len(self.field[0]))] for j in range(len(self.field[0]))]
         cols = self.field[:]
-        print(diags, rows, cols, sep='\n')
+
         # Checking...
         for i in range(len(diags)):
             if (diags[i].count(diags[i][0]) == len(diags[i])) and diags[i][0] != '?':
                 self.winner = 'X' if self.player == '0' else '0'
                 self.block_buttons()
-                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.output.setText(f'Игра завершена!\nПобедил игрок "{self.winner}"')
                 self.btnStart.setDisabled(False)
 
         for i in range(len(rows)):
             if (rows[i].count(rows[i][0]) == len(rows[i])) and rows[i][0] != '?':
                 self.winner = 'X' if self.player == '0' else '0'
                 self.block_buttons()
-                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.output.setText(f'Игра завершена!\nПобедил игрок "{self.winner}"')
                 self.btnStart.setDisabled(False)
 
         for i in range(len(cols)):
             if (cols[i].count(cols[i][0]) == len(cols[i])) and cols[i][0] != '?':
                 self.winner = 'X' if self.player == '0' else '0'
                 self.block_buttons()
-                self.output.setText(f'Победил игрок "{self.winner}".')
+                self.output.setText(f'Игра завершена!\nПобедил игрок "{self.winner}"')
                 self.btnStart.setDisabled(False)
 
         if '?' not in str(self.field) and not self.winner:
             self.winner = None
-            self.output.setText('Ничья')
+            self.output.setText(f'Игра завершена!\nНичья')
             self.block_buttons()
             self.btnStart.setDisabled(False)
 
@@ -96,7 +96,6 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
             row = 2
             col = int(button.objectName()[-1]) - 7
 
-        print(self.field[row][col])
         if self.field[row][col] == '?':
             if self.player == 'X':
                 self.field[row][col] = 'X'
