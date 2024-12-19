@@ -11,7 +11,7 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle('Крестики-Нолики')
         self.setFixedSize(600, 600)
-       
+
         self.btns = [[self.btn_1, self.btn_2, self.btn_3],
                      [self.btn_4, self.btn_5, self.btn_6],
                      [self.btn_7, self.btn_8, self.btn_9]
@@ -68,14 +68,14 @@ class TikTacToeBoard(QMainWindow, Ui_MainWindow):
                 self.block_buttons()
                 self.output.setText(f'Победил игрок "{self.winner}".')
                 self.btnStart.setDisabled(False)
-                
+
         for i in range(len(cols)):
             if (cols[i].count(cols[i][0]) == len(cols[i])) and cols[i][0] != '?':
                 self.winner = 'X' if self.player == '0' else '0'
                 self.block_buttons()
                 self.output.setText(f'Победил игрок "{self.winner}".')
                 self.btnStart.setDisabled(False)
-                
+
         if '?' not in str(self.field) and not self.winner:
             self.winner = None
             self.output.setText('Ничья')
